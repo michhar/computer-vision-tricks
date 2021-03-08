@@ -4,7 +4,7 @@ The purpose of this folder is to show how to identify areas of a certain color (
 
 We can take the following image as input, for example.
 
-<img src="data/qr_white.jpg" width="70%">
+<img src="../data/qr_white.jpg" width="70%">
 
 In the image results below, boundaries are drawn around the potential QR codes.  Below, the red square represents the top hit as it's the largest area (followed by green, then blue - based on size).  Only the top three hits are represented.
 

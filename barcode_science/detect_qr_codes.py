@@ -144,7 +144,7 @@ def find_mask(image):
 
     # Range for white
     lower_hsv = np.array([0,0,0])
-    upper_hsv = np.array([30,50,255])
+    upper_hsv = np.array([255,10,255])
     mask = cv2.inRange(hsv, lower_hsv, upper_hsv)  
 
     # Generating the final mask to detect color
