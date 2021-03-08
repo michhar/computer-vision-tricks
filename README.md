@@ -3,7 +3,7 @@
 ## Projects
 
 - `barcode_science`:  Detect QR codes with OpenCV erosion and dilations
-- `polygon_science`:  Mask regions in a certain HSV color range and calculate polygons with OpenCV and Shaply
+- `polygon_science`:  Mask regions in a certain HSV color range and calculate polygons with OpenCV and Shapely
 
 ## Color maps
 
@@ -13,6 +13,8 @@ To find a color in HSV see the colormap below.  In OpenCV hue (H) is in the rang
 
 ## Helper scripts
 
-To explore interactively upper and lower values for the HSV values (the color range) to be used in the main script, the app/tool `color_thresholder.py` may be used on an image (check the script to change input image).
+To explore interactively upper and lower values for the HSV values (the hue, saturation and vibrance, HSV, color space), the app/tool `color_thresholder.py` may be used on an image (check the script to set the input image).
 
-To determine upper and lower values for colors using RGB values, the `find_hsv_ranges.py` will provide this (check the script for input RGB values).
+To determine upper and lower values for colors using RGB values, the `find_hsv_ranges.py` will provide this (check the script to set input RGB values).
+
+To explore HSV masks and image results try out `explore_hsv_masks.py` (check the script to set the input image - right now it's set for two red ranges).
