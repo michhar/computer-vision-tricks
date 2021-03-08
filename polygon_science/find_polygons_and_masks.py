@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import argparse
-from skimage.color import rgb2gray
 from collections import defaultdict
 from shapely.geometry import MultiPolygon, Polygon
 import matplotlib.pyplot as plt

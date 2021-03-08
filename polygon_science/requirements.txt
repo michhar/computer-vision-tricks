@@ -1,4 +1,3 @@
 shapely
-scikit-image
 numpy
 opencv-python

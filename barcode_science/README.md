@@ -1,6 +1,6 @@
 # Using OpenCV to Identify QR Codes
 
-The purpose of this repo is to show how to identify areas of a certain color (potentially skewed) and detect QR/barcodes within the colored region.  A basic Python sample using OpenCV computer vision techniques is provided and operates on single images.  As-is, this sample works well on white receipts with the QR code.
+The purpose of this folder is to show how to identify areas of a certain color (potentially skewed) and detect QR/barcodes within the colored region.  A basic Python sample using OpenCV computer vision techniques is provided and operates on single images.  As-is, this sample works well on white receipts with the QR code.
 
 We can take the following image as input, for example.
 
