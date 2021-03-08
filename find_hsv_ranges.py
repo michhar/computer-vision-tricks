@@ -1,0 +1,22 @@
+"""
+Convert RGB to lower and upper limit HSV values for main script
+
+Note:  doesn't work for white very well
+"""
+
+import numpy as np
+import cv2
+
+# This is the input RGB value
+# rgb = [161, 118, 89] # brown
+rgb = [139, 0, 0] # dark red
+
+bgr = np.uint8([[rgb[::-1]]])
+hsvColor = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+print(hsvColor)
+
+lowerLimit = hsvColor[0][0][0] - 10, 100, 100
+upperLimit = hsvColor[0][0][0] + 10, 255, 255
+
+print(lowerLimit)
+print(upperLimit)
