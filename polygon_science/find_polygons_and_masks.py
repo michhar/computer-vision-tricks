@@ -68,68 +68,12 @@ def mask_for_polygons(polygons, im_size):
     cv2.fillPoly(img_mask, interiors, 0)
     return img_mask
 
-def threshold(image, show=False):
-
-    #resize image
-    image = cv2.resize(image, None, fx=0.7, fy=0.7, interpolation=cv2.INTER_CUBIC)
-
-    #convert to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    #calculate x & y gradient
-    gradX = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=-1)
-    gradY = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=-1)
-
-    # subtract the y-gradient from the x-gradient
-    gradient = cv2.subtract(gradX, gradY)
-    gradient = cv2.convertScaleAbs(gradient)
-    if show:
-        cv2.imshow("gradient-sub",cv2.resize(gradient,None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC))
-
-    # blur the image - this is going to be sensitive to the resolution/size of image
-    # so tune to your needs
-    blurred = cv2.blur(gradient, (3, 3))
-
-    # threshold the image - also may need some tuning
-    (_, thresh) = cv2.threshold(blurred, 230, 255, cv2.THRESH_BINARY)
-
-    # invert image
-    # thresh = cv2.bitwise_not(thresh)
-
-    #Generating the final output
-    cv2.imwrite("results/thresholded.jpg", thresh)
-
-    return thresh
-
 def find_mask(image):
     """
     Mask the select color portions of the image based on HSV 
     color wheel and save mask image
-
-    Based on:
-
+    Note:  OpenCV uses  H: 0-179, S: 0-255, V: 0-255
     """
-    # convert to hsv
-    img_hsv=cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-    # lower mask (0-10)
-    lower_red = np.array([0,50,50])
-    upper_red = np.array([10,255,255])
-    mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
-
-    # upper mask (170-180)
-    lower_red = np.array([170,50,50])
-    upper_red = np.array([180,255,255])
-    mask1 = cv2.inRange(img_hsv, lower_red, upper_red)
-
-    # join my masks
-    mask = mask0+mask1
-
-    return mask
-
-def find_mask2(image):
-    """Mask the select color portions of the image based on HSV 
-    color wheel and save mask image"""
     # converting from BGR to HSV color space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -138,24 +82,19 @@ def find_mask2(image):
     # upper_hsv = np.array([111, 255, 255])
     # mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
 
-    # # Range for brown
-    # lower_hsv = np.array([5, 100, 100])
-    # upper_hsv = np.array([25, 255, 255])
-    # mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
-
-    # # Range for white
-    # lower_hsv = np.array([0,0,0])
-    # upper_hsv = np.array([30,50,255])
-    # mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
-
-    # Range for red ("upper red")
+    # Range for red ("pinkish red") - note, there are two reddish 
+    # regions on Hue scale
     lower_hsv = np.array([170,50,50])
     upper_hsv = np.array([180,255,255])
     mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
 
     # Generating the final mask to detect color
-    mask1 = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3,3),np.uint8))
-    mask1 = cv2.morphologyEx(mask1, cv2.MORPH_DILATE, np.ones((3,3),np.uint8))
+    mask1 = cv2.morphologyEx(mask, cv2.MORPH_OPEN,
+                             np.ones((3,3),
+                             np.uint8))
+    mask1 = cv2.morphologyEx(mask1, cv2.MORPH_DILATE,
+                             np.ones((3,3),
+                             np.uint8))
 
     # creating image showing static background frame pixels only for the masked region
     res = cv2.bitwise_and(image, image, mask=mask1)
@@ -175,10 +114,10 @@ if __name__ == "__main__":
     
     orig_image = cv2.imread(args.image)
 
-    mask1 = find_mask2(orig_image)
+    mask1 = find_mask(orig_image)
     plt.imsave("results/1_morph_mask.jpg", mask1[...,::-1], cmap='gray')
 
-    # # #convert to grayscale
+    # Cconvert to grayscale
     gray = cv2.cvtColor(mask1, cv2.COLOR_BGR2GRAY)
 
     # Convert to black and white
@@ -187,14 +126,11 @@ if __name__ == "__main__":
 
     # Get the polygons using shapely
     polys = mask_to_polygons(bw, min_area=100)
+    print("{} polygons found.".format(len(polys)))
 
     # Convert the polygons back to a mask image to validate that all went well
     mask2 = mask_for_polygons(polys, orig_image.shape[:2])
 
-    # View - you'll see some loss in detail compared to the before-polygon 
+    # Save - you'll see some loss in detail compared to the before-polygon 
     # image if min_area is high - go ahead and try different numbers!
-    # plt.imshow(mask2, cmap='gray', interpolation='nearest')
-    # cv2.imwrite("results/polygon_mask.jpg", mask2)
     plt.imsave("results/3_polygon_mask.jpg", mask2, cmap='gray')
-
-    # threshold(orig_image)
