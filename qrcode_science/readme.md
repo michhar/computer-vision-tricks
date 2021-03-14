@@ -8,7 +8,7 @@ We can take the following image as input, for example.
 
 In the image results below, boundaries are drawn around the potential QR codes.  Below, the red square represents the top hit as it's the largest area (followed by green, then blue - based on size).  Only the top three hits are represented.
 
-<img src="results/barcode_found.jpg" width="50%">
+<img src="results/qrcode_found_straight.jpg" width="30%">
 
 To achieve this, the script below performs the following.
 

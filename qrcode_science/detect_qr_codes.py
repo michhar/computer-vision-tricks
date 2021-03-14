@@ -22,7 +22,7 @@ def find_barcode(image, orig_image, orig_box_tag, show):
     top three QR code(s) and draw bounding box, save image
     """
     #resize image
-    image = cv2.resize(image, None, fx=0.7, fy=0.7, interpolation=cv2.INTER_CUBIC)
+    # image = cv2.resize(image, None, fx=0.7, fy=0.7, interpolation=cv2.INTER_CUBIC)
 
     #convert to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -80,18 +80,15 @@ def find_barcode(image, orig_image, orig_box_tag, show):
 
         # draw a bounding box arounded the detected barcode and display the
         # image (and three largest boxes)
-        cv2.drawContours(image, [box1], -1, colors[i], 6) # Red box (biggest)
+        cv2.drawContours(image, [box1], -1, colors[i], 4) # Red box (biggest)
         
         if cnt == 2:
             break
         cnt+=1
 
-
-    image = cv2.resize(image, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
-
     # Show barcode id
     cv2.imshow("barcode_id", image)
-    cv2.imwrite("results/barcode_found.jpg", image)
+    cv2.imwrite("results/qrcode_found_straight.jpg", image)
 
     # Rotation of cropped image above back to orig rotation
 
@@ -114,7 +111,7 @@ def find_barcode(image, orig_image, orig_box_tag, show):
     result = cv2.addWeighted(orig_image, alpha, tag_warped, beta, 0.0)
 
     cv2.imshow("barcode_id_orig", result)
-    # cv2.imwrite("results/barcodes_identified_orig_image.jpg", result)
+    cv2.imwrite("results/qrcodes_found_orig_image.jpg", result)
 
 
 def angle(vector1, vector2):
