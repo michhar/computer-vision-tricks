@@ -15,14 +15,16 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import hsv_to_rgb
 
 
-s, h = np.mgrid[0:1:256j, 0:1:180j]
+s, h = np.mgrid[0:1:255j, 0:1:179j]
 v = np.ones_like(s)
 hsv = np.dstack((h,s,v))
 rgb = hsv_to_rgb(hsv)
 
 print(rgb.shape)
-plt.imshow(rgb, origin="lower", extent=[0, 180, 0, 256])
+plt.imshow(rgb, origin="lower", interpolation='nearest', aspect='auto')
+plt.gca().invert_yaxis()
 plt.xlabel("H")
 plt.ylabel("S")
+plt.xticks(range(0,179,20))
 plt.title("$V_{HSV}=255$")
 plt.show()
