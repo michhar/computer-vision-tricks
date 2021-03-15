@@ -9,7 +9,7 @@
 
 To find a color in HSV see the colorspace plot below.  In OpenCV hue (H) is in the range 0-179, saturation (S) 0-255 and vibrance (V) 0-255.  In the plot below, V is set to a constant value of 255.
 
-![HSV color space chart](assets/hsv_chart.png)
+![HSV color space chart](assets/hsv_chart_constant_v.png)
 
 See `hsv_colorspace_plotter.py` to see how this image was made with the `matplotlib` library.
 
