@@ -13,10 +13,20 @@ To find a color in HSV see the colorspace plot below.  In OpenCV hue (H) is in t
 
 See `hsv_colorspace_plotter.py` to see how this image was made with the `matplotlib` library.
 
-## Helper scripts
+## Setup
 
-To explore interactively upper and lower values for the HSV values (the hue, saturation and value), the app/tool `color_thresholder.py` may be used on an image (check the script to set the input image).
+Create a Python environment (conda, `venv`, `uv`, etc.) and install the libraries with pip as follows.
+
+```
+pip install -r requirements.txt
+```
+
+Use scripts in the `utils` folder to help you choose color ranges.
+
+## Helper scripts in `utils`
+
+To explore interactively upper and lower values for the HSV values (the hue, saturation and value), the app/tool `interactive_color_thresholder.py`, in the `utils` folder, for any image Open CV can read.
 
 To determine upper and lower values for colors using RGB values, the `find_hsv_ranges.py` will provide this (check the script to set input RGB values).
 
-To explore HSV masks and image results try out `explore_hsv_masks.py` (check the script to set the input image - right now it's set for two red ranges).
+To explore HSV masks and image results try out `explore_hsv_masks.py` (check the script to set the color ranges).

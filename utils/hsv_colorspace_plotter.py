@@ -1,6 +1,6 @@
 """
-HSV Colorspace plot with the following ranges (these being the OpenCV 
-ranges):
+This script creats an HSV Colorspace plot with the following ranges with
+these being the OpenCV ranges:
 
 H: 0-179 (hue range)
 S: 0-255 (saturation range)

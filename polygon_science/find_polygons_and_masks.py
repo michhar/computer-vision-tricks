@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 import argparse
@@ -5,6 +6,15 @@ from collections import defaultdict
 from shapely.geometry import MultiPolygon, Polygon
 import matplotlib.pyplot as plt
 
+
+def find_hsv_ranges(rgb):
+    bgr = np.uint8([[rgb[::-1]]])
+    hsv_color = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+    
+    lower_limit = np.array([hsv_color[0][0][0] - 15, 100, 100])
+    upper_limit = np.array([hsv_color[0][0][0] + 15, 255, 255])
+
+    return lower_limit, upper_limit
 
 def blur(image):
     #calculate x & y gradient
@@ -67,7 +77,7 @@ def mask_for_polygons(polygons, im_size):
     cv2.fillPoly(img_mask, interiors, 0)
     return img_mask
 
-def find_mask(image):
+def find_mask(image, lower_hsv, upper_hsv):
     """
     Mask the select color portions of the image based on HSV 
     color wheel and save mask image
@@ -83,8 +93,8 @@ def find_mask(image):
 
     # Range for red ("pinkish red") - note, there are two reddish 
     # regions on Hue scale
-    lower_hsv = np.array([170,50,50])
-    upper_hsv = np.array([180,255,255])
+    # lower_hsv = np.array([170,50,50])
+    # upper_hsv = np.array([180,255,255])
     mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
 
     # Generating the final mask to detect color
@@ -106,30 +116,41 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--image", required=True, help="path to the image file")
     parser.add_argument(
         "--show", default=False, action="store_true",
-        help="Show the steps in QR code identification"
+        help="Show the steps in mask identification"
     )
 
-    args = parser.parse_args()    
+    # rgb = [113, 163, 234] # blue
+    # lower_hsv, upper_hsv = find_hsv_ranges(rgb)
+
+    # hardcoded based on the utils script interactive_color_thresholder.py
+    # run script to help choose these values for your image
+    lower_hsv = np.array([89 ,30, 75])
+    upper_hsv = np.array([179 ,255, 255])
+
+    args = parser.parse_args()
     
     orig_image = cv2.imread(args.image)
 
-    mask1 = find_mask(orig_image)
-    plt.imsave("results/1_morph_mask.jpg", mask1[...,::-1], cmap='gray')
+    if not os.path.exists('test'):
+        os.makedirs('test', exist_ok=True)
+
+    mask1 = find_mask(orig_image, lower_hsv, upper_hsv)
+    plt.imsave("test/1_morph_mask.jpg", mask1[...,::-1], cmap='gray')
 
     # Cconvert to grayscale
     gray = cv2.cvtColor(mask1, cv2.COLOR_BGR2GRAY)
 
     # Convert to black and white
     bw = cv2.convertScaleAbs(gray)
-    plt.imsave("results/2_bw.jpg", bw, cmap='gray')
+    plt.imsave("test/2_bw.jpg", bw, cmap='gray')
 
     # Get the polygons using shapely
-    polys = mask_to_polygons(bw, min_area=100)
-    print("{} polygons found.".format(len(polys)))
+    polys = mask_to_polygons(bw, min_area=200).geoms
+    print(f"{len(polys)} polygons found.")
 
     # Convert the polygons back to a mask image to validate that all went well
     mask2 = mask_for_polygons(polys, orig_image.shape[:2])
 
     # Save - you'll see some loss in detail compared to the before-polygon 
     # image if min_area is high - go ahead and try different numbers!
-    plt.imsave("results/3_polygon_mask.jpg", mask2, cmap='gray')
+    plt.imsave("test/3_polygon_mask.jpg", mask2, cmap='gray')
